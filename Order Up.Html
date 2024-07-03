@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner</title>
+   <body style="background-color:aqua"></body>
+   <style>
+         
+        .grey-box {
+            background-color: grey;
+            color: white;
+            padding: 10px;
+            margin-top: 440px;
+            text-align: center;
+        }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        form { 
+            margin-bottom: 20px; 
+        }
+        #clock { 
+            margin-bottom: 20px; 
+            display: inline-block; 
+        }
+        .hidden { 
+            display: none; 
+        }
+        .meal-box { 
+            border: 1px solid #000; 
+            padding: 10px; 
+            margin-top: 20px; 
+        }
+        #instructions { 
+            display: inline-block; 
+            margin-left: 20px; 
+            vertical-align: top; 
+        }
+        footer { 
+            margin-top: 20px; 
+            text-align: center; 
+        }
+        button { 
+            background-color: yellow; 
+            padding: 10px; 
+            border: none; 
+            cursor: pointer; 
+            margin-right: 10px; 
+        }
+        button.blue-button { 
+            background-color: aqua; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Meal Planner</h1>
+    <div id="auth-section">
+        <h2>Signup</h2>
+        <form id="signup-form">
+            <label for="signup-email">Email:</label>
+            <input type="email" id="signup-email" required>
+            <label for="signup-password">Password:</label>
+            <input type="password" id="signup-password" required>
+            <label for="special-id">Special ID:</label>
+            <input type="text" id="special-id" required>
+            <button type="button" onclick="signup()">Signup</button>
+        </form>
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" required>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" required>
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+    <div id="dashboard-section" class="hidden">
+        <h1>Welcome to the Meal Planner Dashboard</h1>
+        <div id="clock"></div>
+        <div id="instructions">
+            <h3>Instructions</h3>
+            <p>Step 1: Answer the quiz</p>
+            <p>Step 2: Submit the quiz</p>
+            <p>Step 3: Download your list</p>
+            <p>Step 4: Print out your list by pressing Command + P</p>
+            <p>Step 5: Give list to the C.E.O of THE B, K, P Brett Ruiz</p>
+        </div>
+        <button onclick="logout()">Logout</button>
+        <div id="meal-creations">
+            <h3>Your Meal Creations</h3>
+            <div id="meals-list"  style="background-color:yellow"></div>
+        </div>
+        <h2>Make New Week Lunch</h2>
+        <form id="lunch-form">
+            <h3>Select a drink</h3>
+            <label><input type="radio" name="drink" value="Water" required> Water</label>
+            <label><input type="radio" name="drink" value="Juice" required> Juice</label>
+            <label><input type="radio" name="drink" value="Soda" required> Soda</label>
+
+            <h3>Select a sandwich</h3>
+            <label><input type="radio" name="sandwich" value="Turkey" required> Turkey</label>
+            <label><input type="radio" name="sandwich" value="Ham" required> Ham</label>
+            <label><input type="radio" name="sandwich" value="Veggie" required> Veggie</label>
+
+            <h3>Select a fruit</h3>
+            <label><input type="radio" name="fruit" value="Apple" required> Apple</label>
+            <label><input type="radio" name="fruit" value="Banana" required> Banana</label>
+            <label><input type="radio" name="fruit" value="Orange" required> Orange</label>
+
+            <h3>Select a side</h3>
+            <label><input type="radio" name="side" value="Chips" required> Chips</label>
+            <label><input type="radio" name="side" value="Salad" required> Salad</label>
+            <label><input type="radio" name="side" value="Fruit Cup" required> Fruit Cup</label>
+
+            <h3>Select a bread</h3>
+            <label><input type="radio" name="bread" value="White" required> White</label>
+            <label><input type="radio" name="bread" value="Whole Wheat" required> Flour Bread</label>
+            <label><input type="radio" name="bread" value="Rye" required> Rye</label>
+
+            <button type="button" onclick="submitLunch()">Submit</button>
+        </form>
+    </div>
+    <footer>
+       
+        <div class="grey-box">
+            <b> &copy; THE BKP  Since 1939</b>
+            Created by Brett Ruiz 'Published, July 3, 2024'
+        </div>         
+
+    </footer>
+    <script>
+        const SPECIAL_ID = "supermansucks";
+
+        function updateClock() {
+            const now = new Date();
+            const clock = document.getElementById('clock');
+            clock.innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function signup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const specialId = document.getElementById('special-id').value;
+
+            if (specialId !== SPECIAL_ID) {
+                alert('Invalid ID, Visit the C.E.O if further problems');
+                return;
+            }
+
+            localStorage.setItem(email, password);
+            alert('Signup successful!');
+        }
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const storedPassword = localStorage.getItem(email);
+            if (storedPassword === password) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                loadMeals(email);
+            } else {
+                alert('Incorrect Passord');
+            }
+        }
+
+        function logout() {
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('dashboard-section').classList.add('hidden');
+        }
+
+        function submitLunch() {
+            const drink = document.querySelector('input[name="drink"]:checked').value;
+            const sandwich = document.querySelector('input[name="sandwich"]:checked').value;
+            const fruit = document.querySelector('input[name="fruit"]:checked').value;
+            const side = document.querySelector('input[name="side"]:checked').value;
+            const bread = document.querySelector('input[name="bread"]:checked').value;
+
+            const meal = { drink, sandwich, fruit, side, bread };
+
+            const email = document.getElementById('login-email').value || document.getElementById('signup-email').value;
+            let meals = JSON.parse(localStorage.getItem(email + '-meals')) || [];
+            meals.push(meal);
+            localStorage.setItem(email + '-meals', JSON.stringify(meals));
+
+            displayMeal(meal);
+            document.getElementById('lunch-form').reset();
+        }
+
+        function loadMeals(email) {
+            const meals = JSON.parse(localStorage.getItem(email + '-meals')) || [];
+            meals.forEach(meal => displayMeal(meal));
+        }
+
+        function displayMeal(meal) {
+            const mealList = document.getElementById('meals-list');
+            const mealBox = document.createElement('div');
+            mealBox.className = 'meal-box';
+            const ul = document.createElement('ul');
+            for (const key in meal) {
+                const li = document.createElement('li');
+                li.textContent = `${key}: ${meal[key]}`;
+                ul.appendChild(li);
+            }
+            const downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Download Meal';
+            downloadButton.className = 'blue-button'; // Assigning blue-button class
+            downloadButton.onclick = () => downloadMeal(meal);
+            mealBox.appendChild(ul);
+            mealBox.appendChild(downloadButton);
+            mealList.appendChild(mealBox);
+        }
+
+        function downloadMeal(meal) {
+            let mealText = '';
+            for (const key in meal) {
+                mealText += `${key}: ${meal[key]}\n`;
+            }
+            const blob = new Blob([mealText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'meal.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
